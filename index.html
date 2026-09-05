@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Александр Иванов. Системный аналитик и AI-продукты</title>
+<meta name="description" content="Ведущий системный аналитик: 13 лет для банков и маркетплейсов. Своя команда AI-агентов и четыре продукта в проде.">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   Александр Иванов. Личная страница.
+   Тёмное досье: off-black ground, один акцент, дисплейный
+   гротеск Unbounded + текстовый Onest + JetBrains Mono для данных.
+   Один файл, без сборки. Рядом ожидаются photo.png и resume.pdf.
+   ============================================================ */
+
+:root{
+  /* Поверхности */
+  --bg:#0B0C0E;
+  --bg-2:#101216;
+  --panel:#15181C;
+  --panel-2:#1A1E23;
+  --line:#23272D;
+  --line-2:#333941;
+
+  /* Текст */
+  --ink:#EDEEEA;
+  --ink-2:#C3C6C1;
+  --ink-3:#9CA0A6;
+  --ink-4:#7C8087;
+
+  /* Акцент. Один на всю страницу. */
+  --acc:#F2531B;
+  --acc-hi:#FF6E3A;
+  --acc-dim:rgba(242,83,27,.14);
+  --acc-line:rgba(242,83,27,.32);
+
+  /* Типографика */
+  --disp:"Unbounded",system-ui,sans-serif;
+  --text:"Onest",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  /* Форма. Одна шкала радиусов на весь документ. */
+  --r:3px;
+
+  /* Движение */
+  --ease-out:cubic-bezier(0.23,1,0.32,1);
+  --ease-io:cubic-bezier(0.77,0,0.175,1);
+
+  --pad:clamp(20px,4vw,40px);
+  --max:1120px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{overflow-x:clip;scrollbar-color:var(--line-2) var(--bg);scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--text);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  caret-color:var(--acc);
+  overflow-x:clip;
+}
+::selection{background:var(--acc);color:#0B0C0E}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+
+:where(a,button,summary):focus-visible{
+  outline:2px solid var(--acc-hi);outline-offset:3px;border-radius:1px;
+}
+
+.wrap{max-width:var(--max);margin:0 auto;padding-inline:var(--pad)}
+
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:60;
+  background:var(--acc);color:#0B0C0E;padding:10px 16px;
+  font-family:var(--mono);font-size:13px;border-radius:var(--r);
+}
+.skip:focus{left:12px;top:12px}
+
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* --- служебные типографические роли --- */
+.mono{
+  font-family:var(--mono);font-size:11.5px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4);
+}
+.num{font-variant-numeric:tabular-nums}
+
+h1,h2,h3{margin:0}
+.h2{
+  font-family:var(--disp);font-weight:700;
+  font-size:clamp(25px,3.4vw,38px);line-height:1.06;letter-spacing:-.03em;
+  text-wrap:balance;margin:0 0 18px;
+}
+.lede{
+  font-size:clamp(16px,1.45vw,19px);line-height:1.55;color:var(--ink-2);
+  max-width:62ch;margin:0 0 clamp(32px,4vw,48px);
+}
+.lede b{color:var(--ink);font-weight:600}
+
+section{padding-block:clamp(64px,7.5vw,112px);border-top:1px solid var(--line);scroll-margin-top:74px}
+footer{scroll-margin-top:74px}
+
+/* ============ ШАПКА ============ */
+.top{
+  position:sticky;top:0;z-index:40;
+  background:rgba(11,12,14,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid transparent;
+  transition:border-color .18s ease,background .18s ease;
+}
+.top.stuck{border-bottom-color:var(--line);background:rgba(11,12,14,.94)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:62px}
+.brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);text-decoration:none;white-space:nowrap}
+.brand span{color:var(--ink-4)}
+.nav{display:flex;gap:26px}
+.nav a{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-4);text-decoration:none;white-space:nowrap;
+  transition:color .16s ease;
+}
+.nav a:hover{color:var(--ink)}
+@media (max-width:820px){.nav{display:none}}
+@media (max-width:560px){.brand span{display:none}}
+
+/* ============ КНОПКИ ============ */
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.02em;
+  text-decoration:none;white-space:nowrap;border-radius:var(--r);
+  padding:12px 20px;min-height:44px;border:1px solid var(--acc);
+  transition:background .16s ease,border-color .16s ease,color .16s ease,transform .1s ease;
+}
+.btn-a{background:var(--acc);color:#0B0C0E}
+.btn-a:hover{background:var(--acc-hi);border-color:var(--acc-hi)}
+.btn-b{background:transparent;color:var(--acc);border-color:var(--line-2)}
+.btn-b:hover{color:var(--acc-hi);border-color:var(--acc-line);background:var(--acc-dim)}
+.btn:active{transform:translateY(1px)}
+.btn-s{padding:8px 14px;min-height:36px;font-size:12px}
+@media (max-width:520px){.btn-s{padding:8px 12px}}
+
+/* ============ ГЕРОЙ ============ */
+.hero{border-top:0;padding-block:clamp(40px,6vw,80px) clamp(56px,6vw,96px)}
+.hero .wrap{
+  display:grid;grid-template-columns:minmax(250px,.9fr) 1.1fr;
+  gap:clamp(28px,4.5vw,64px);align-items:center;
+}
+.portrait{position:relative;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.portrait .ph{aspect-ratio:4/5;width:100%;object-fit:cover;filter:grayscale(1) contrast(1.07) brightness(.98)}
+.portrait.empty .ph{display:none}
+.fallback{display:none;aspect-ratio:4/5;width:100%;place-items:center;background:
+  radial-gradient(120% 90% at 30% 0%,#1B1F25 0%,#101216 60%,#0D0F12 100%)}
+.portrait.empty .fallback{display:grid}
+.fallback b{font-family:var(--disp);font-weight:800;font-size:clamp(40px,7vw,64px);letter-spacing:-.04em;color:#39414B}
+.pcap{
+  display:flex;justify-content:space-between;gap:12px;
+  padding:10px 12px;border-top:1px solid var(--line);background:var(--bg-2);
+}
+
+.role-line{
+  font-family:var(--mono);font-size:clamp(11px,1.1vw,13px);font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--acc);
+  margin:14px 0 20px;
+}
+.role-line i{font-style:normal;color:var(--ink-4)}
+h1.name{
+  font-family:var(--disp);font-weight:800;
+  font-size:clamp(36px,6.4vw,84px);line-height:.98;letter-spacing:-.035em;
+}
+.hero p.sub{
+  font-size:clamp(16px,1.55vw,20px);line-height:1.5;color:var(--ink-2);
+  max-width:44ch;margin:0 0 30px;
+}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+
+@media (max-width:860px){
+  .hero .wrap{grid-template-columns:1fr;gap:28px}
+  .portrait{max-width:280px}
+}
+@media (max-width:560px){.pcap{flex-direction:column;gap:4px}}
+
+/* контактная лента под героем */
+.strip{border-block:1px solid var(--line);background:var(--bg-2)}
+.strip .wrap{
+  display:flex;flex-wrap:wrap;gap:10px 34px;align-items:center;
+  padding-block:15px;
+}
+.strip a,.strip span{
+  font-family:var(--mono);font-size:12.5px;color:var(--ink-3);text-decoration:none;
+  display:inline-flex;align-items:center;gap:9px;
+}
+.strip a{
+  border-bottom:1px solid transparent;padding-block:2px;
+  transition:color .16s ease,border-color .16s ease;
+}
+.strip a:hover{color:var(--acc);border-bottom-color:var(--acc-line)}
+.strip .k{color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;font-size:10.5px}
+
+/* ============ ХРОНОЛОГИЯ (главный визуальный аргумент) ============ */
+/* Прозрачная таблица: слева — что получилось, справа — когда и где.
+   Строки связаны построчно, разделители едва слышные, заливок и рамок нет. */
+.chart{margin-top:8px;--lbl:232px;--lgap:20px}
+.axis{
+  position:relative;height:22px;margin-bottom:10px;
+  margin-left:calc(var(--lbl) + var(--lgap));
+  border-bottom:1px solid var(--line);
+}
+.axis i{
+  position:absolute;bottom:0;left:calc(var(--x) * 100%);
+  transform:translateX(-50%);
+  font-family:var(--mono);font-size:11px;font-style:normal;color:var(--ink-4);
+  padding-bottom:5px;font-variant-numeric:tabular-nums;
+}
+.axis i::after{content:"";position:absolute;left:50%;bottom:-1px;width:1px;height:5px;background:var(--line-2)}
+.axis i:first-child{transform:none}
+.axis i:first-child::after{left:0}
+.axis i:last-child{transform:translateX(-100%)}
+.axis i:last-child::after{left:auto;right:0}
+
+.bars{list-style:none;margin:0;padding:0}
+.bars li{
+  position:relative;display:grid;align-items:center;
+  grid-template-columns:var(--lbl) minmax(0,1fr);column-gap:var(--lgap);
+  padding-block:8px;border-top:1px solid var(--line);
+}
+.bars li:first-child{border-top:0}
+.bars .plot{display:block;position:relative;height:34px}
+/* Полоса — коробка, которая держит подпись ВНУТРИ себя и не даёт ей вылезти
+   на фон. Заливка и рамка живут в ::before, поэтому прочерчивание scaleX
+   не растягивает текст. Подпись выключена по центру, полей нет: кегль роли
+   подобран по самой узкой полосе диаграммы, и отступ пришлось бы вычитать
+   из её запаса. У широких полос имя оказывается посередине своего срока —
+   оно подписывает весь период, а не его начало. */
+.bars .bar{
+  position:absolute;top:0;bottom:0;
+  left:calc(var(--s) * 100%);width:calc(var(--w) * 100%);
+  min-width:max-content;
+  display:flex;align-items:center;justify-content:center;
+}
+.bars .bar::before{
+  content:"";position:absolute;inset:0;
+  border-radius:var(--r);border:1px solid var(--line-2);background:var(--panel);
+  transform:scaleX(0);transform-origin:left center;
+  transition:transform .48s var(--ease-out) var(--bar-delay,0ms),
+             border-color .16s ease,background .16s ease;
+}
+.chart.in .bars .bar::before{transform:scaleX(1)}
+.bars .lbl{
+  position:relative;white-space:nowrap;pointer-events:none;
+  opacity:0;transition:opacity .3s var(--ease-out) .18s;
+}
+.chart.in .bars .lbl{opacity:1}
+.chart .b-name{
+  font-family:var(--mono);font-size:10px;font-weight:500;
+  color:var(--ink-2);line-height:1;
+}
+/* Левая колонка: только результат, ради него на строку и смотрят.
+   Ориентир — две строки в ячейке: колонка должна читаться сама по себе,
+   а не подписью к полосе. Ширина 232px посчитана от обратного — см. 17.2. */
+.chart .b-res{
+  display:block;font-size:13px;font-weight:400;line-height:1.35;color:var(--ink-2);
+  opacity:0;transition:opacity .3s var(--ease-out) .18s,color .16s ease;
+}
+.chart.in .b-res{opacity:1}
+.chart .b-res b,.chart-m .b-res b{font-weight:600;color:var(--ink)}
+.bars li.own{margin-top:18px;border-top-color:var(--line-2)}
+.bars li.own .bar::before{background:var(--acc);border-color:var(--acc)}
+.bars li.own .b-name{color:var(--bg)}
+.bars li:hover .bar::before{border-color:var(--acc-line)}
+.bars li:hover .b-res{color:var(--ink)}
+.bars li.own:hover .bar::before{background:var(--acc-hi);border-color:var(--acc-hi)}
+.chart-key{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px}
+.chart-key span{display:inline-flex;align-items:center;gap:9px}
+.chart-key i{width:12px;height:12px;border-radius:1px;border:1px solid var(--line-2);background:var(--panel)}
+.chart-key .own i{background:var(--acc);border-color:var(--acc)}
+
+/* 761–1119px: полю времени уже не хватает ширины, чтобы самая короткая полоса
+   вместила своё название. Таблица раскладывается в строки: выжимка встаёт
+   над своей полосой, поле времени забирает всю ширину.
+   Порог 1120 = --max: выше него контейнер не растёт, поэтому в табличном
+   режиме геометрия постоянная, а поле у самой узкой полосы (Тинькофф)
+   всегда 4.45px с каждой стороны. */
+@media (max-width:1119px){
+  .chart{--lbl:0px;--lgap:0px}
+  .bars li{display:block;padding-block:9px}
+  .chart .b-res{margin-bottom:5px}
+}
+
+/* мобильный вариант хронологии */
+.chart-m{display:none;list-style:none;margin:0;padding:0}
+.chart-m li{display:flex;gap:16px;padding:13px 0;border-top:1px solid var(--line)}
+.chart-m li:first-child{border-top:0}
+.chart-m .y{font-family:var(--mono);font-size:11.5px;color:var(--ink-4);white-space:nowrap;flex:0 0 92px;padding-top:2px;font-variant-numeric:tabular-nums}
+.chart-m .o{font-size:15px;color:var(--ink-2);min-width:0}
+.chart-m .b-res{display:block;margin-top:4px;font-size:12.5px;line-height:1.32;color:var(--ink-3)}
+.chart-m li.own .o{color:var(--acc);font-weight:600}
+/* Ниже 784 поле времени сжимается настолько, что самая узкая полоса (Тинькофф,
+   13 месяцев) перестаёт вмещать своё имя в 10px: на 784 у неё поле 2.04px
+   с каждой стороны, ниже — рамка. Опускать кегль дальше значит вернуть
+   вымученную подпись. Диаграмма уступает место списку: та же восьмёрка строк
+   с годами и выжимками, только в другой раскладке. */
+@media (max-width:783px){
+  .chart{display:none}
+  .chart-m{display:block}
+}
+
+/* ============ ПРОДУКТЫ (бенто 4 ячейки, асимметричные колонки) ============ */
+.grid-p{display:grid;grid-template-columns:1.32fr 1fr;gap:16px}
+.p{
+  display:flex;flex-direction:column;
+  border:1px solid var(--line);border-radius:var(--r);
+  background:linear-gradient(168deg,var(--panel-2) 0%,var(--panel) 46%,var(--bg-2) 100%);
+  padding:clamp(22px,2.4vw,32px);
+  transition:border-color .16s ease,transform .16s var(--ease-out);
+}
+.p:hover{border-color:var(--line-2);transform:translateY(-2px)}
+.p:nth-child(2),.p:nth-child(3){
+  background:linear-gradient(200deg,var(--panel) 0%,var(--bg-2) 62%,var(--bg-2) 100%);
+}
+.p h3{font-family:var(--disp);font-weight:700;font-size:clamp(19px,1.9vw,24px);letter-spacing:-.02em;line-height:1.15}
+.p .kind{margin:8px 0 16px;color:var(--ink-3)}
+.p p{margin:0 0 18px;font-size:15.5px;line-height:1.58;color:var(--ink-2)}
+.p .stack{
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-3);
+  padding-top:16px;border-top:1px solid var(--line);margin-top:auto;
+}
+/* Подвал карточки прижат к низу, чтобы линейки стека совпали по строке.
+   Но карточка без скриншота на 300px короче соседки: прижатый подвал
+   оставляет в ней дыру, которая читается как «картинка не загрузилась».
+   Поэтому у карточки, где слот скриншота отсутствует (onerror удалил его),
+   подвал идёт обычным потоком. Появится файл — правило само перестанет
+   срабатывать и подвал вернётся на общую линию. */
+.p:not(:has(.p-shot-link)) .stack{margin-top:24px}
+.p .go{
+  display:inline-flex;align-items:center;gap:9px;margin-top:16px;
+  font-family:var(--mono);font-size:12.5px;color:var(--acc);text-decoration:none;
+  border-bottom:1px solid var(--acc-line);padding-bottom:3px;align-self:flex-start;
+  transition:color .16s ease,border-color .16s ease;
+}
+.p .go .ar{transition:transform .16s var(--ease-out)}
+.p .go:hover{color:var(--acc-hi);border-color:var(--acc-hi)}
+.p .go:hover .ar{transform:translateX(4px)}
+/* Скриншот показывается только если файл реально загрузился.
+   Обёртка-ссылка ведёт туда же, куда кнопка .go: это второй, крупный
+   хит-таргет для мыши и пальца. Из дерева доступности и из таба она
+   исключена (tabindex=-1 + aria-hidden), чтобы скринридер не получил
+   дубль той же ссылки — единственный озвученный путь остаётся .go. */
+.p-shot-link{display:none;margin:0 0 18px;border-radius:var(--r);text-decoration:none}
+.p-shot{margin:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  background:var(--bg-2);transition:border-color .16s ease}
+.p-shot-link:hover .p-shot{border-color:var(--acc-line)}
+.p-shot img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top center}
+@media (max-width:820px){
+  .grid-p{grid-template-columns:1fr}
+}
+
+/* ============ ПАЙПЛАЙН ============ */
+.rail{position:relative;display:grid;grid-template-columns:repeat(7,1fr);gap:0;margin-top:8px}
+.rail::before{
+  content:"";position:absolute;left:0;right:0;top:9px;height:1px;background:var(--line-2);
+  transform:scaleX(0);transform-origin:left center;
+  transition:transform .64s var(--ease-out);
+}
+.rail.in::before{transform:scaleX(1)}
+.step{
+  position:relative;padding:0 14px 0 0;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .28s var(--ease-out),transform .28s var(--ease-out);
+}
+.rail.in .step{opacity:1;transform:none}
+.step::before{
+  content:"";position:absolute;left:0;top:5px;width:9px;height:9px;border-radius:1px;
+  background:var(--bg);border:1px solid var(--line-2);
+}
+.step.last::before{background:var(--acc);border-color:var(--acc)}
+.step .t{display:block;margin-top:26px;font-size:15px;font-weight:600;color:var(--ink);line-height:1.25}
+.step .w{display:block;margin-top:5px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-4)}
+@media (max-width:900px){
+  .rail{grid-template-columns:1fr;gap:0}
+  .rail::before{left:4px;right:auto;top:6px;bottom:32px;width:1px;height:auto;transform:scaleY(0);transform-origin:top center;transition:transform .64s var(--ease-out)}
+  .rail.in::before{transform:scaleY(1)}
+  .step{padding:0 0 20px 26px}
+  .step:last-child{padding-bottom:0}
+  .step::before{top:6px}
+  .step .t{margin-top:0;display:inline}
+  .step .w{margin-top:3px}
+}
+
+/* ============ КОРПОРАТИВНЫЙ ОПЫТ ============ */
+.jobs{display:flex;flex-direction:column}
+.job{
+  display:grid;grid-template-columns:minmax(190px,.72fr) 1.28fr;
+  gap:clamp(16px,3vw,48px);
+  padding-block:clamp(26px,3vw,36px);border-top:1px solid var(--line);
+}
+.job:first-child{border-top:0;padding-top:0}
+.job .org{font-family:var(--disp);font-weight:700;font-size:clamp(18px,1.7vw,21px);letter-spacing:-.02em;line-height:1.2}
+.job .when{margin-top:9px;font-family:var(--mono);font-size:12px;color:var(--ink-4);font-variant-numeric:tabular-nums}
+.job .role{margin-top:5px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc)}
+.job ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px}
+.job li{position:relative;padding-left:19px;font-size:15.5px;line-height:1.58;color:var(--ink-2)}
+.job li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;background:var(--line-2)}
+.job li b{color:var(--ink);font-weight:600}
+/* Ключевой результат. Отдельная типографическая роль, не ещё один буллет:
+   ярче (--ink), крупнее и плотнее буллетов, а маркер-прочерк оранжевый —
+   тот же язык, что у .facts в «Научном результате». Серый прочерк на
+   странице = чем занимался, оранжевый = что получилось. Ярлыка «Результат»
+   нет намеренно: страница отказалась от надглавных подписей. */
+.job .res{
+  position:relative;padding-left:19px;margin-bottom:18px;
+  font-size:16.5px;line-height:1.5;font-weight:500;color:var(--ink);
+}
+.job .res::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;background:var(--acc)}
+/* Второй результат в карточке-контейнере двух проектов (Мегамаркет). 26px
+   против 18px, которые .res отдаёт вниз своим буллетам: внутри блока
+   «результат + буллеты» теснее, чем между блоками, — иначе оба прочерка
+   висят на равном расстоянии и пара не собирается. */
+.job ul + .res{margin-top:26px}
+.job .stack{margin-top:18px;font-family:var(--mono);font-size:11.5px;color:var(--ink-4);line-height:1.7}
+@media (max-width:760px){.job{grid-template-columns:1fr;gap:16px}}
+
+/* ============ ОБРАЗОВАНИЕ И НАУКА ============ */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,64px)}
+@media (max-width:760px){.two{grid-template-columns:1fr;gap:36px}}
+.h3{font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:-.02em;margin:0 0 18px}
+.rows{list-style:none;margin:0;padding:0}
+.rows li{display:flex;gap:18px;padding:14px 0;border-top:1px solid var(--line)}
+.rows li:first-child{border-top:0;padding-top:0}
+.rows .y{font-family:var(--mono);font-size:12.5px;color:var(--acc);flex:0 0 52px;padding-top:2px;font-variant-numeric:tabular-nums}
+.rows .d{font-size:15.5px;line-height:1.5;color:var(--ink-2)}
+.rows .d em{display:block;font-style:normal;font-size:13.5px;color:var(--ink-4);margin-top:3px}
+/* Строка, которая ещё не случилась. Три независимых сигнала подряд, чтобы
+   читатель не принял план за состоявшуюся степень: линейка пунктиром (линия
+   учёбы продолжается, но не сплошной), год не акцентом (акцент на этой
+   странице маркирует свершившееся) и явная метка «план» у формулировки. */
+.rows li.plan{border-top-style:dashed}
+.rows li.plan .y{color:var(--ink-4)}
+.plan-tag{
+  display:inline-block;margin-left:4px;transform:translateY(-2px);
+  font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink-4);white-space:nowrap;
+  border:1px solid var(--line-2);border-radius:var(--r);padding:2px 7px;
+}
+/* Метка склеена с последним словом формулировки: иначе на средних ширинах
+   она срывается на отдельную строку и висит там сиротой. */
+.plan-keep{white-space:nowrap}
+.facts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:13px}
+.facts li{position:relative;padding-left:19px;font-size:15.5px;line-height:1.55;color:var(--ink-2)}
+.facts li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;background:var(--acc)}
+.facts li b{color:var(--ink);font-weight:600}
+
+/* ============ ВНЕ РАБОТЫ ============ */
+/* Строки «занятие → мера»: страница везде ставит рядом факт и его результат,
+   здесь работает то же правило, что в карточках опыта. Под каждой парой —
+   строка о том, что занятие даёт, поэтому строка переносится на второй ярус
+   через flex-wrap, а мера остаётся на одной базовой линии с названием. */
+.off{list-style:none;margin:0;padding:0;max-width:720px}
+.off li{
+  display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;
+  gap:0 24px;padding:17px 0;border-top:1px solid var(--line);
+}
+.off li:first-child{border-top:0;padding-top:0}
+.off .k{flex:1 1 auto;min-width:0;font-size:16.5px;font-weight:500;color:var(--ink)}
+.off .v{
+  flex:0 0 auto;
+  font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--ink-3);
+  text-align:right;font-variant-numeric:tabular-nums;
+}
+/* Второй ярус строки: содержательный текст, поэтому --ink-2 (как основной
+   текст страницы), а не --ink-3 мер и подписей. */
+.off .n{
+  flex:1 1 100%;margin-top:7px;
+  font-size:14.5px;line-height:1.55;color:var(--ink-2);max-width:52ch;
+  /* v1.18: описание регбола длиннее соседних подстрочников и на узких
+     ширинах оставляло в хвосте одно слово. `pretty` уводит висячее слово,
+     не меняя числа строк (замеры в разделе 29 ноты). */
+  text-wrap:pretty;
+}
+/* Акцент в том же языке, что полоса AIFactory в хронологии: оранжевый
+   на этой странице значит «это его собственное», а не «это важнее». */
+.off .own .k{color:var(--acc)}
+.off-more{margin:26px 0 0;font-size:15px;line-height:1.6;color:var(--ink-3);max-width:62ch;text-wrap:pretty}
+@media (max-width:560px){
+  /* Столбик: название → мера → строка о занятии. Мера прижата к названию
+     (5px), от второго яруса отделена вдвое большим зазором (11px) —
+     иначе она зависает ровно между ними и теряет владельца. */
+  .off li{flex-direction:column;align-items:flex-start;gap:5px}
+  .off .v{text-align:left}
+  .off .n{margin-top:6px}
+}
+
+/* ============ ПОДВАЛ ============ */
+footer{border-top:1px solid var(--line);padding-block:clamp(56px,6vw,88px) 40px;background:var(--bg-2)}
+.foot{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(28px,4vw,64px);align-items:start}
+.foot h2{font-family:var(--disp);font-weight:800;font-size:clamp(28px,3.8vw,44px);line-height:1.04;letter-spacing:-.035em;margin:0 0 16px;text-wrap:balance}
+.foot p{margin:0 0 28px;color:var(--ink-2);font-size:16px;max-width:40ch}
+.fl{list-style:none;margin:0;padding:0}
+.fl li{border-top:1px solid var(--line)}
+.fl li:first-child{border-top:0}
+.fl a,.fl span{
+  display:flex;justify-content:space-between;gap:16px;align-items:baseline;
+  padding:14px 0;font-family:var(--mono);font-size:13px;color:var(--ink-2);text-decoration:none;
+  transition:color .16s ease;
+}
+.fl a:hover{color:var(--acc)}
+.fl b{font-weight:500;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4)}
+.copy{margin-top:clamp(40px,5vw,64px);padding-top:22px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4)}
+@media (max-width:760px){.foot{grid-template-columns:1fr;gap:34px}}
+
+/* ============ ПОЯВЛЕНИЕ БЛОКОВ ============ */
+.rise{opacity:0;transform:translateY(14px);
+  transition:opacity .28s var(--ease-out),transform .28s var(--ease-out)}
+.rise.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  .rise,.chart .bar::before,.chart .lbl,.chart .b-res,.rail::before,.step{
+    opacity:1!important;transform:none!important;transition:none!important;
+  }
+  .chart .bar::before{transform:scaleX(1)!important}
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">К содержанию</a>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="brand" href="#top">А. Иванов <span>/ системный аналитик</span></a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#products">Продукты</a>
+      <a href="#experience">Опыт</a>
+      <a href="#education">Образование</a>
+      <a href="#contact">Контакты</a>
+    </nav>
+    <a class="btn btn-b btn-s" href="resume.pdf" download>Резюме PDF</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ ГЕРОЙ ============ -->
+<section class="hero">
+  <div class="wrap">
+    <!-- photo.png: портрет 4:5, минимум 800x1000. Пока файла нет, показывается монограмма. -->
+    <figure class="portrait" id="portrait" style="margin:0">
+      <img class="ph" src="photo.png" alt="Александр Иванов, портрет" width="800" height="1000"
+           onerror="document.getElementById('portrait').classList.add('empty')">
+      <div class="fallback" aria-hidden="true"><b>АИ</b></div>
+      <figcaption class="pcap">
+        <span class="mono">Новосибирск</span>
+        <span class="mono">Удалённо / Москва</span>
+      </figcaption>
+    </figure>
+
+    <div>
+      <h1 class="name">Александр<br>Иванов</h1>
+      <p class="role-line">Ведущий системный аналитик <i>/</i> AI-продукты</p>
+      <p class="sub">13 лет проектирую системы для банков и маркетплейсов. Собрал команду AI-агентов и вывел с ней четыре продукта в прод.</p>
+      <div class="cta">
+        <a class="btn btn-a" href="https://t.me/AleksandrIvanov90">Написать в Telegram</a>
+        <a class="btn btn-b" href="resume.pdf" download>Резюме PDF</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="wrap">
+    <a href="tel:+79134553965"><span class="k">Тел</span>+7 913 455-39-65</a>
+    <a href="https://t.me/AleksandrIvanov90"><span class="k">TG</span>@AleksandrIvanov90</a>
+    <a href="mailto:6ppp@mail.ru"><span class="k">Почта</span>6ppp@mail.ru</a>
+    <span><span class="k">Языки</span>Русский родной, английский B2</span>
+  </div>
+</div>
+
+<!-- ============ ХРОНОЛОГИЯ ============ -->
+<section id="timeline" aria-labelledby="t-time">
+  <div class="wrap">
+    <h2 class="h2 rise" id="t-time">Опыт по годам</h2>
+    <p class="lede rise">Первая линия: корпоративные проекты, от науки и аналитики до банков и маркетплейса. Вторая: то, что я строю сам. С 2025 года они идут параллельно, и вторая выросла из первой.</p>
+
+    <div class="chart">
+      <div class="axis" aria-hidden="true">
+        <i style="--x:0">2012</i><i style="--x:.2">2015</i><i style="--x:.4">2018</i><i style="--x:.6">2021</i><i style="--x:.8">2024</i><i style="--x:1">2027</i>
+      </div>
+      <ol class="bars">
+        <li style="--s:.0444;--w:.4444"><span class="b-res">Программный комплекс&nbsp;— лучшее достижение лаборатории 2017</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">ИВМиМГ СО РАН</span><span class="sr">с 2012 по 2019 год</span></span></span></span></li>
+        <li style="--s:.4278;--w:.1278"><span class="b-res"><b>2</b> свидетельства на движок смысла; возглавил отдел аналитики</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">DST</span><span class="sr">с 2018 по 2020 год</span></span></span></span></li>
+        <li style="--s:.5611;--w:.1333"><span class="b-res">Модуль переплат ПФР целиком: появление, управление, удержание</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">ОТР 2000</span><span class="sr">с 2020 по 2022 год</span></span></span></span></li>
+        <li style="--s:.6222;--w:.0778"><span class="b-res"><b>~10</b> решений data lake в&nbsp;проде: от состава данных до приёмки</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Сбер</span><span class="sr">с мая 2021 по июль 2022</span></span></span></span></li>
+        <li style="--s:.6778;--w:.0722"><span class="b-res">«Безопасная сделка» вышла из монолита в&nbsp;прод микросервисом</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Тинькофф</span><span class="sr">с 2022 года по апрель 2023</span></span></span></span></li>
+        <li style="--s:.7444;--w:.1444"><span class="b-res"><b>8</b> сервисов в&nbsp;проде, миллионы офферов; ещё 5 во втором проекте</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Мегамаркет</span><span class="sr">с 2023 по 2025 год</span></span></span></span></li>
+        <li style="--s:.8111;--w:.1667"><span class="b-res">Монолит → микросервисы в&nbsp;проде: мониторинг риск-метрик клиента</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Альфа-Банк</span><span class="sr">с 2024 года по настоящее время</span></span></span></span></li>
+        <li class="own" style="--s:.8667;--w:.1111"><span class="b-res"><b>4</b> продукта в&nbsp;проде, сделаны своей командой AI-агентов</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">AIFactory</span><span class="sr">с 2025 года по настоящее время</span></span></span></span></li>
+      </ol>
+      <p class="chart-key mono">
+        <span><i aria-hidden="true"></i>Корпоративные проекты</span>
+        <span class="own"><i aria-hidden="true"></i>Своя команда агентов и продукты</span>
+      </p>
+    </div>
+
+    <ol class="chart-m">
+      <li><span class="y">2012 / 2019</span><span class="o">ИВМиМГ СО РАН<span class="b-res">Программный комплекс&nbsp;— лучшее достижение лаборатории 2017</span></span></li>
+      <li><span class="y">2018 / 2020</span><span class="o">DST<span class="b-res"><b>2</b> свидетельства на движок смысла; возглавил отдел аналитики</span></span></li>
+      <li><span class="y">2020 / 2022</span><span class="o">ОТР 2000<span class="b-res">Модуль переплат ПФР целиком: появление, управление, удержание</span></span></li>
+      <li><span class="y">2021 / 2022</span><span class="o">Сбербанк<span class="b-res"><b>~10</b> решений data lake в&nbsp;проде: от состава данных до приёмки</span></span></li>
+      <li><span class="y">2022 / 2023</span><span class="o">Тинькофф<span class="b-res">«Безопасная сделка» вышла из монолита в&nbsp;прод микросервисом</span></span></li>
+      <li><span class="y">2023 / 2025</span><span class="o">Мегамаркет<span class="b-res"><b>8</b> сервисов в&nbsp;проде, миллионы офферов; ещё 5 во втором проекте</span></span></li>
+      <li><span class="y">2024 / сейчас</span><span class="o">Альфа-Банк<span class="b-res">Монолит → микросервисы в&nbsp;проде: мониторинг риск-метрик клиента</span></span></li>
+      <li class="own"><span class="y">2025 / сейчас</span><span class="o">AIFactory и свои продукты<span class="b-res"><b>4</b> продукта в&nbsp;проде, сделаны своей командой AI-агентов</span></span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ ПРОДУКТЫ ============ -->
+<section id="products" aria-labelledby="t-prod">
+  <div class="wrap">
+    <h2 class="h2 rise" id="t-prod">Что я построил сам</h2>
+    <p class="lede rise">Четыре продукта, которые сейчас работают в проде. Все сделаны через <b>AIFactory</b>, мою команду AI-агентов: аналитик, архитектор, разработчик, ревьюер, тестировщик, продакт, UX-директор и архивариус. Я ставлю задачу, команда проводит её через полный цикл.</p>
+
+    <div class="grid-p">
+
+      <article class="p rise">
+        <!-- Скриншот 16:10, 1600x1000. Раздел «Команда» Офиса, тёмный вариант темы.
+             Слот включается только по onload: нет файла — карточка остаётся текстовой. -->
+        <a class="p-shot-link" href="https://office-production-f3cf.up.railway.app"
+           tabindex="-1" aria-hidden="true">
+          <figure class="p-shot"><img src="shots/office.webp" alt="" decoding="async"
+            onload="this.closest('.p-shot-link').style.display='block'"
+            onerror="this.closest('.p-shot-link').remove()"></figure></a>
+        <h3>Проектный Офис</h3>
+        <p class="kind mono">Веб-платформа</p>
+        <p>Место, откуда я управляю командой агентов: доска задач, документы проектов, реестр агентов и скиллов, карты пайплайнов. Я вижу, кто над чем работает и в каком состоянии проект, агенты пишут туда результат. Без такого узла команда из восьми ролей превращается в хаос переписки.</p>
+        <a class="go" href="https://office-production-f3cf.up.railway.app">Открыть Офис <span class="ar" aria-hidden="true">&rarr;</span></a>
+        <p class="stack">FastAPI / PostgreSQL / Railway</p>
+      </article>
+
+      <article class="p rise">
+        <!-- Мобильная версия журнала: экран снят на ширине 430 (iPhone Pro Max) и
+             показан в корпусе телефона, уходящем за нижний край слота. Слот бенто
+             горизонтальный 16:10, экран вертикальный 1:2 — целиком он влез бы только
+             при масштабе 0.27, на котором текст превращается в кашу. Корпус — единственное,
+             что честно говорит «это мобильный продукт» в горизонтальном кадре.
+             В кадре не шапка приложения, а карточка сетапа со вкладки «Ситапы»:
+             тикер, направление, исход, R:R, уровни ТВХ/СТОП/ТЕЙК, теги классификации
+             и начало разбора. Сводка с винрейтом остаётся выше среза сознательно.
+             Ссылка ведёт на вкладку «Ситапы» — ту, что на кадре. -->
+        <a class="p-shot-link" href="https://app-production-249d.up.railway.app/trader_club/journal?tab=setups"
+           tabindex="-1" aria-hidden="true">
+          <figure class="p-shot"><img src="shots/trader.webp" alt="" decoding="async"
+            onload="this.closest('.p-shot-link').style.display='block'"
+            onerror="this.closest('.p-shot-link').remove()"></figure></a>
+        <h3>Trader Club</h3>
+        <p class="kind mono">Журнал и аналитика</p>
+        <p>Журнал сделок с графиками и разбором. Консилиум агентов читает рыночную ситуацию, размечает уровни прямо на графике, копит статистику по типам сетапов и проверяет гипотезы бэктестом на собственной истории. Интересен сам механизм: система учится на своих же данных.</p>
+        <a class="go" href="https://app-production-249d.up.railway.app/trader_club/journal?tab=setups">Открыть журнал <span class="ar" aria-hidden="true">&rarr;</span></a>
+        <p class="stack">Графики / бэктест / PostgreSQL</p>
+      </article>
+
+      <article class="p rise">
+        <!-- Конструктор расчётного модуля: граф формул и проверка согласованности. -->
+        <a class="p-shot-link" href="https://formula-constructor-ui-prod.up.railway.app/"
+           tabindex="-1" aria-hidden="true">
+          <figure class="p-shot"><img src="shots/calcora.webp" alt="" decoding="async"
+            onload="this.closest('.p-shot-link').style.display='block'"
+            onerror="this.closest('.p-shot-link').remove()"></figure></a>
+        <h3>Calcora</h3>
+        <p class="kind mono">Заказная разработка</p>
+        <p>Платформа инженерных расчётов, сделанная под заказчика. В основе движок величин и единиц измерения: формула не соберётся, если размерности не сходятся, ошибка ловится до расчёта, а не после него. Сверху конструктор формул и расчётных модулей. Единственный проект в списке, за который мне платят.</p>
+        <a class="go" href="https://formula-constructor-ui-prod.up.railway.app/">Открыть конструктор <span class="ar" aria-hidden="true">&rarr;</span></a>
+        <p class="stack">Движок величин / проверка размерностей</p>
+      </article>
+
+      <article class="p rise">
+        <!-- Меню команд бота: видно, что у него есть режимы и сценарии. Лента переписки
+             размыта намеренно — это личный диалог владельца. Приём читается как приём,
+             а не как битая картинка, потому что меню и строка ввода под ним резкие. -->
+        <a class="p-shot-link" href="https://t.me/yourPocketTutor_bot"
+           tabindex="-1" aria-hidden="true">
+          <figure class="p-shot"><img src="shots/pockettutor.webp" alt="" decoding="async"
+            onload="this.closest('.p-shot-link').style.display='block'"
+            onerror="this.closest('.p-shot-link').remove()"></figure></a>
+        <h3>PocketTutor</h3>
+        <p class="kind mono">Телеграм-бот</p>
+        <p>Репетитор в мессенджере. Присылаешь фото домашнего задания, получаешь разбор с объяснением, а не готовый ответ, чтобы в следующий раз ребёнок решил сам. По слабым местам бот собирает уроки. Самый требовательный к качеству продукт: ошибку в объяснении сразу видит родитель.</p>
+        <a class="go" href="https://t.me/yourPocketTutor_bot">Открыть бота <span class="ar" aria-hidden="true">&rarr;</span></a>
+        <p class="stack">Telegram / разбор фото / генерация уроков</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ ПАЙПЛАЙН ============ -->
+<section id="how" aria-labelledby="t-how">
+  <div class="wrap">
+    <h2 class="h2 rise" id="t-how">Как это делается</h2>
+    <p class="lede rise">Каждая задача проходит один и тот же путь. Разработчик не начинает, пока нет спецификации, ревьюер блокирует то, что расходится с ней, тестировщик пишет тесты отдельно от кода. Это тот же конвейер, который я двенадцать лет выстраивал в корпоративных командах, просто исполнители другие.</p>
+
+    <div class="rail">
+      <div class="step"><span class="t">Discovery</span><span class="w">Продакт</span></div>
+      <div class="step"><span class="t">Архитектура</span><span class="w">Архитектор</span></div>
+      <div class="step"><span class="t">Спецификация</span><span class="w">Аналитик</span></div>
+      <div class="step"><span class="t">Реализация</span><span class="w">Разработчик</span></div>
+      <div class="step"><span class="t">Ревью</span><span class="w">Ревьюер</span></div>
+      <div class="step"><span class="t">Тесты</span><span class="w">Тестировщик</span></div>
+      <div class="step last"><span class="t">Прод</span><span class="w">Владелец</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ КОРПОРАТИВНЫЙ ОПЫТ ============ -->
+<section id="experience" aria-labelledby="t-exp">
+  <div class="wrap">
+    <h2 class="h2 rise" id="t-exp">Корпоративные проекты</h2>
+    <p class="lede rise">Общий стаж 13 лет 10 месяцев. Моя сильная сторона — работать там, где пока непонятно, что и как: документации нет, вводных мало. Восстанавливаю устройство системы по коду и по людям, беру решение на себя и довожу его до прода.</p>
+
+    <div class="jobs">
+
+      <article class="job rise">
+        <div>
+          <h3 class="org">Selecty, проект Альфа-Банка</h3>
+          <p class="when num">Март 2024 / сейчас</p>
+          <p class="role">Ведущий системный аналитик</p>
+        </div>
+        <div>
+          <p class="res">Монолитная система мониторинга финансовых и риск-метрик клиента переведена в микросервисную архитектуру и выведена в прод.</p>
+          <ul>
+            <li>Веду больше трёх доменных областей: сделки, расчёт оборотов, мониторинг клиентов и сигналы, которые его запускают. Ищу системы-источники, проектирую межсистемные интеграции и защищаю решения на архитектурном комитете&nbsp;— за проект их выстроено <b>более чем с десятью командами</b> банка.</li>
+            <!-- Лучшее число карточки. Имён представлений и таблиц нет намеренно (NDA):
+                 счёт объектов и секунды сами по себе ничего не раскрывают. -->
+            <li>Разбор техдолга: две тяжёлые процедуры, одна&nbsp;— <b>больше 9000 строк</b> без описания и с вызовами, вложенными в другие процедуры. Раскрыл дерево вызовов и вынес расчёты отдельными алгоритмами: логика вышла из базы и стала пригодной для передачи в Kafka.</li>
+          </ul>
+          <p class="stack">Микросервисы / Kafka / хранимые процедуры / интеграции / SQL</p>
+        </div>
+      </article>
+
+      <article class="job rise">
+        <div>
+          <h3 class="org">Мегамаркет</h3>
+          <p class="when num">Март 2023 / май 2025</p>
+          <p class="role">Системный аналитик, продуктовый архитектор</p>
+        </div>
+        <div>
+          <!-- Единственная карточка секции с двумя проектами в двух командах, и она
+               единственная, где оранжевых прочерков два: у каждой команды свой
+               результат и своё число сервисов. Порядок внутри блока тот же, что
+               у остальных пяти карточек, — результат, потом серые буллеты к нему. -->
+          <p class="res">Предобработка офферов шла раз в сутки, теперь идёт потоком: монолит распилен на 8 сервисов в проде.</p>
+          <ul>
+            <li>Документации не было, а офферов миллионы: восстановил схему AS IS, нашёл неконсистентность между базами-источниками и устранил потери данных при передаче. Переход предложил и согласовал сам: он затронул сервисы <b>более чем пяти смежных команд</b>, включая ML-категоризацию и матчинг товаров. От схемы до прода&nbsp;— полгода.</li>
+          </ul>
+          <p class="res">Внешние клиенты подключаются по API: спроектирован корневой сервис управления офферами, ещё 5 сервисов в проде.</p>
+          <ul>
+            <li>Это продавцы, партнёрские магазины и сторонние площадки; корневой сервис оркестрирует потоки данных и хранит целевые данные оффера. На базовой проработке предложил архитектуру: состав новых сервисов, интеграции со смежными командами, перенос старой функциональности.</li>
+          </ul>
+          <p class="stack">AS IS / TO BE / потоковая архитектура / API / высокие нагрузки</p>
+        </div>
+      </article>
+
+      <article class="job rise">
+        <div>
+          <h3 class="org">Globus IT</h3>
+          <p class="when num">Май 2021 / апрель 2023</p>
+          <p class="role">Аналитик, аутстафф</p>
+        </div>
+        <div>
+          <p class="res">Около 10 решений по передаче данных из data lake Сбербанка доведено до промышленной эксплуатации.</p>
+          <ul>
+            <li>Сбербанк: за каждым решением стоит отдельная постановка бизнес-заказчика&nbsp;— от состава данных и потоков NiFi до интеграции с Hadoop и приёмки на ИФТ и ПСИ.</li>
+            <!-- Аналогия с Авито — единственный способ объяснить домен читателю
+                 снаружи банка. Схема публичная, NDA не задевает. -->
+            <li>Тинькофф: «безопасная сделка»&nbsp;— расчёты, где деньги покупателя заморожены до выполнения условий; по такой схеме работает покупка-продажа на Авито. Бизнес-логика жила только в коде: восстанавливал её из Java, Kotlin, Groovy и хранимых процедур Oracle, оформлял AS IS и TO BE, вывел из монолита в прод микросервисом.</li>
+          </ul>
+          <p class="stack">HDFS / Hadoop / Apache NiFi / SQL / Oracle</p>
+        </div>
+      </article>
+
+      <article class="job rise">
+        <div>
+          <h3 class="org">ОТР 2000</h3>
+          <p class="when num">Июнь 2020 / июнь 2022</p>
+          <p class="role">Системный аналитик</p>
+        </div>
+        <div>
+          <!-- Статус по резюме: тестовый стенд, не пром. Формулировка честная
+               намеренно: «в проде» здесь было бы неправдой. -->
+          <p class="res">Модуль переплат пенсионного фонда построен целиком, от появления до удержания из других выплат, и развёрнут на тестовом стенде.</p>
+          <ul>
+            <!-- Кейс с региональным коэффициентом утверждён владельцем отдельно: это
+               единственное место на странице, где виден предметный смысл работы,
+               а не только процесс. Размер команды на витрину не выносится. -->
+            <li>Откуда берутся переплаты: коэффициенты выплат в регионах разные. Человек переехал, а сообщил об этом через год&nbsp;— и весь год получал начисления по коэффициенту прежнего региона. Модуль пересчитывает выплаты по новому коэффициенту и ведёт возникшую переплату.</li>
+            <li>Интеграции с тремя смежными системами, биллинг, правила дата-фиксов.</li>
+          </ul>
+          <p class="stack">BPMN / UML / Sequence / Swagger / Postman / Groovy</p>
+        </div>
+      </article>
+
+      <article class="job rise">
+        <div>
+          <h3 class="org">DST, Deep Semantic Technologies</h3>
+          <p class="when num">Июнь 2018 / май 2020</p>
+          <p class="role">Аналитик, затем руководитель отдела</p>
+        </div>
+        <div>
+          <p class="res">С нуля написал на Java движок, который извлекает объекты и субъекты из текста на живом языке; на него получено 2 свидетельства о регистрации.</p>
+          <ul>
+            <li>Аналитические отчёты по обратной связи для опроса ЦентроБанка и МодульБанка.</li>
+            <li>Готовил научные обоснования и статьи для грантов и фондов, включая Фонд Бортника.</li>
+            <li>Читал авторский курс на образовательном интенсиве «Остров 10-22» (Сколтех, 2019).</li>
+          </ul>
+          <p class="stack">Word2Vec / TF-IDF / Java / C++ / R / Python / Power BI</p>
+        </div>
+      </article>
+
+      <!-- Два яруса науки: строка результата — программный комплекс
+           (оранжевый прочерк, что получилось), буллет — 10 статей по той же
+           теме (серый прочерк, чем занимался). Число статей стоит на странице
+           один раз, здесь: в реестре «Научный результат» остались индексы. -->
+      <article class="job rise">
+        <div>
+          <h3 class="org">ИВМиМГ СО РАН</h3>
+          <p class="when num">Сентябрь 2012 / май 2019</p>
+          <p class="role">Научный сотрудник</p>
+        </div>
+        <div>
+          <p class="res">Программный комплекс для расчёта случайных процессов признан самым значимым достижением лаборатории по итогам 2017 года.</p>
+          <ul>
+            <li><b>10 статей</b> по численному анализу систем стохастических дифференциальных уравнений на суперкомпьютере.</li>
+            <li>Вёл проекты лаборатории целиком&nbsp;— от постановки задачи до публикации результата: планирование, отчётность и кадровые вопросы.</li>
+          </ul>
+          <p class="stack">Численные методы / HPC / C++ / R</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ ОБРАЗОВАНИЕ И НАУКА ============ -->
+<section id="education" aria-labelledby="t-edu">
+  <div class="wrap">
+    <h2 class="h2 rise" id="t-edu">Образование и наука</h2>
+    <div class="two rise">
+      <div>
+        <h3 class="h3">Учёба</h3>
+        <ol class="rows">
+          <li><span class="y num">2010</span><span class="d">Бакалавр математики<em>НГУ, механико-математический факультет</em></span></li>
+          <li><span class="y num">2012</span><span class="d">Магистр вычислительной математики<em>НГУ, механико-математический факультет</em></span></li>
+          <li><span class="y num">2014</span><span class="d">Кандидатские минимумы по математике и английскому</span></li>
+          <li><span class="y num">2015</span><span class="d">Аспирантура, вычислительная математика<em>ИВМиМГ СО РАН</em></span></li>
+          <!-- Планируемая защита. Стоит в колонке «Учёба», а не в «Научном
+               результате»: справа только то, что уже сделано. Это и есть
+               механизм честности, а не только оформление строки. -->
+          <li class="plan"><span class="y num">2027</span><span class="d">Защита кандидатской <span class="plan-keep">диссертации <span class="plan-tag">план</span></span><em>Планируемый срок. Аспирантура окончена, кандидатские минимумы сданы.</em></span></li>
+        </ol>
+      </div>
+      <div>
+        <h3 class="h3">Научный результат</h3>
+        <ul class="facts">
+          <li>Публикации в SCOPUS, Web of Science и РИНЦ.</li>
+          <li>Участие в монографии.</li>
+          <li><b>4 свидетельства</b> о регистрации программ для ЭВМ.</li>
+          <li><b>Более 10 докладов</b> на международных конференциях.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ВНЕ РАБОТЫ ============ -->
+<section id="offwork" aria-labelledby="t-off">
+  <div class="wrap">
+    <h2 class="h2 rise" id="t-off">Вне работы</h2>
+    <!-- Рамку «AI-разработка не демотирована в хобби» держит не лид, а связка
+         «заголовок секции + первая строка»: «Вне работы / AI-разработка →
+         Продукты выше». Числа «четыре продукта» здесь нет намеренно — оно уже
+         дважды сказано в хронологии и в лиде секции продуктов.
+         Правка v1.11: все тексты блока построены на утверждении. Отрицательных
+         конструкций («не», «без», «нет») в секции нет — ни в лиде, ни в
+         строках, ни в хвосте. Проверяется поиском по этим словам.
+         Правка v1.13: владелец снял объяснения «что мне это даёт» — лид
+         кончается перечнем мер, хвост держится одной связкой про меру.
+         Правка v1.18: порядок строк хронологический, от текущего к юности
+         (AI-разработка → регбол → борьба). Побочный эффект порядка несущий:
+         подстрочник регбола кончается происхождением игры («выросла из
+         борцовской разминки»), и следующая строка — как раз борьба, поэтому
+         связку между ними объяснять нечем. -->
+    <p class="lede rise">Почти всё, чем я занимаюсь всерьёз, рано или поздно доходит до результата, который где-то записан: разряд, турнирная таблица, работающий продукт.</p>
+    <div class="rise">
+      <ul class="off">
+        <li class="own"><span class="k">AI-разработка</span><span class="v">Продукты выше</span><span class="n">Начиналось с интереса разобраться, как это работает, и выросло в продукты.</span></li>
+        <li><span class="k">Регбол</span><span class="v">2 чемпионата России, 2021</span><span class="n">Контактная командная игра на баскетбольной площадке: силовая борьба разрешена, мяч идёт передачами в кольцо соперника. Выросла из борцовской разминки.</span></li>
+        <li><span class="k">Греко-римская борьба</span><span class="v">КМС</span><span class="n">Юность на ковре. Отсюда режим, объём работы и привычка доводить схватку до конца.</span></li>
+      </ul>
+      <!-- Второй ярус: у этих занятий своя мера, её подводит время, а не
+           турнирная таблица. Раньше та же мысль стояла через отрицание
+           («без разрядов и таблиц») — теперь через утверждение. -->
+      <p class="off-more">Рядом с этим идут шахматы, криптовалюта, зал и&nbsp;бассейн&nbsp;— здесь итог подводит дистанция.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ ПОДВАЛ ============ -->
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <h2>Свободен для проектов</h2>
+        <p>Системный анализ, архитектура интеграций, разбор систем без документации, автоматизация на AI-агентах. Работаю удалённо из Новосибирска или из Москвы, готов к редким командировкам.</p>
+        <a class="btn btn-a" href="https://t.me/AleksandrIvanov90">Написать в Telegram</a>
+      </div>
+      <ul class="fl">
+        <li><a href="tel:+79134553965"><b>Телефон</b><span>+7 913 455-39-65</span></a></li>
+        <li><a href="https://t.me/AleksandrIvanov90"><b>Telegram</b><span>@AleksandrIvanov90</span></a></li>
+        <li><a href="mailto:6ppp@mail.ru"><b>Почта</b><span>6ppp@mail.ru</span></a></li>
+        <li><a href="resume.pdf" download><b>Документ</b><span>Резюме PDF</span></a></li>
+      </ul>
+    </div>
+    <!-- Год рождения вместо возраста: строка не выгорает через год.
+         «Род.» обязательно — иначе два голых года в одной строке (1990 и 2026)
+         читаются как диапазон. -->
+    <p class="copy">Александр Иванов, род. 1990 / Новосибирск, удалённо или Москва / 2026</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* Липкая шапка получает границу, когда страница ушла вверх.
+     Наблюдатель вместо слушателя скролла: ни одного кадра лишней работы. */
+  var top = document.getElementById('top');
+  var sentinel = document.createElement('div');
+  sentinel.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;pointer-events:none';
+  document.body.prepend(sentinel);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      top.classList.toggle('stuck', !entries[0].isIntersecting);
+    }, { threshold: 0 }).observe(sentinel);
+  }
+
+  if (reduce.matches || !('IntersectionObserver' in window)) {
+    document.querySelectorAll('.rise').forEach(function (el) { el.classList.add('in'); });
+    var c = document.querySelector('.chart'); if (c) { c.classList.add('in'); }
+    var r = document.querySelector('.rail'); if (r) { r.classList.add('in'); }
+    return;
+  }
+
+  /* Появление блоков: один раз, по факту входа в кадр. */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) { return; }
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+
+  document.querySelectorAll('.rise').forEach(function (el) { io.observe(el); });
+
+  /* Карточки продуктов появляются каскадом: порядок чтения важнее одновременности. */
+  document.querySelectorAll('.grid-p .p').forEach(function (el, i) {
+    el.style.transitionDelay = (i * 70) + 'ms';
+  });
+
+  /* Хронология: полосы прочерчиваются слева направо, по годам.
+     Это единственный «поставленный» момент на странице. */
+  var chart = document.querySelector('.chart');
+  if (chart) {
+    document.querySelectorAll('.bars li').forEach(function (li, i) {
+      li.querySelector('.bar').style.setProperty('--bar-delay', (i * 55) + 'ms');
+      li.querySelectorAll('.lbl, .b-res').forEach(function (el) {
+        el.style.transitionDelay = (180 + i * 55) + 'ms';
+      });
+    });
+    var cio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) { return; }
+        chart.classList.add('in');
+        cio.disconnect();
+      });
+    }, { threshold: 0.25 });
+    cio.observe(chart);
+  }
+
+  /* Пайплайн: линия прочерчивается, шаги проявляются по очереди. */
+  var rail = document.querySelector('.rail');
+  if (rail) {
+    rail.querySelectorAll('.step').forEach(function (el, i) {
+      el.style.transitionDelay = (140 + i * 45) + 'ms';
+    });
+    var rio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) { return; }
+        rail.classList.add('in');
+        rio.disconnect();
+      });
+    }, { threshold: 0.3 });
+    rio.observe(rail);
+  }
+})();
+</script>
+
+</body>
+</html>
