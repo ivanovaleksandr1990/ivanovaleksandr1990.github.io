@@ -103,6 +103,7 @@ h1,h2,h3{margin:0}
   max-width:62ch;margin:0 0 clamp(32px,4vw,48px);
 }
 .lede b{color:var(--ink);font-weight:600}
+.lede-tight{margin-bottom:14px}
 
 section{padding-block:clamp(64px,7.5vw,112px);border-top:1px solid var(--line);scroll-margin-top:74px}
 footer{scroll-margin-top:74px}
@@ -201,10 +202,35 @@ h1.name{
 .strip a:hover{color:var(--acc);border-bottom-color:var(--acc-line)}
 .strip .k{color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;font-size:10.5px}
 
-/* ============ ХРОНОЛОГИЯ (главный визуальный аргумент) ============ */
-/* Прозрачная таблица: слева — что получилось, справа — когда и где.
-   Строки связаны построчно, разделители едва слышные, заливок и рамок нет. */
+/* ============ ОПЫТ ПО ГОДАМ (главный визуальный аргумент) ============ */
+/* Один блок вместо двух. Строка карьеры несёт три носителя смысла сразу:
+   полосу на оси лет (когда), выжимку слева (что получилось) и — по клику —
+   карточку проекта (период, роль, результат, буллеты, стек). Раскрытие
+   нативное, details/summary: один механизм на всех ширинах, клавиатура
+   и скринридер работают без единой строки JS.
+   Порядок сквозной, от нового к старому; своя линия стоит первой. */
 .chart{margin-top:8px;--lbl:232px;--lgap:20px}
+
+/* Легенда переехала НАД ось. Своя полоса теперь первая строка списка, и ключ
+   к её цвету обязан быть прочитан до неё, а не через восемь строк после;
+   к тому же раскрытая строка уводила бы легенду вниз на непредсказуемое
+   расстояние. Подсказка выключена вправо — ровно над колонкой шевронов,
+   поэтому она их и подписывает. */
+.chart-head{
+  display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;
+  gap:8px 24px;margin-bottom:20px;
+}
+.chart-key{margin:0;display:flex;flex-wrap:wrap;gap:8px 24px}
+.chart-key span{display:inline-flex;align-items:center;gap:9px}
+.chart-key i{width:12px;height:12px;border-radius:1px;border:1px solid var(--line-2);background:var(--panel)}
+.chart-key .own i{background:var(--acc);border-color:var(--acc)}
+.chart-hint{margin:0;display:inline-flex;align-items:center;gap:9px;color:var(--ink-3)}
+.chart-hint::after{
+  content:"";width:6px;height:6px;
+  border-right:1.5px solid var(--ink-3);border-bottom:1.5px solid var(--ink-3);
+  transform:translateY(-2px) rotate(45deg);
+}
+
 .axis{
   position:relative;height:22px;margin-bottom:10px;
   margin-left:calc(var(--lbl) + var(--lgap));
@@ -223,12 +249,34 @@ h1.name{
 .axis i:last-child::after{left:auto;right:0}
 
 .bars{list-style:none;margin:0;padding:0}
-.bars li{
+.bars > li{position:relative;border-top:1px solid var(--line)}
+.bars > li:first-child{border-top:0}
+/* Шапка строки — та же прозрачная таблица, что была у диаграммы: слева
+   выжимка, справа полоса на своей координате. Сетка не изменилась ни на
+   пиксель, поэтому все замеры полос (поле 788px, зазор Тинькофф 4.45px)
+   и оба порога режимов остались в силе. */
+.bars .head{
   position:relative;display:grid;align-items:center;
   grid-template-columns:var(--lbl) minmax(0,1fr);column-gap:var(--lgap);
-  padding-block:8px;border-top:1px solid var(--line);
+  padding-block:8px;
 }
-.bars li:first-child{border-top:0}
+.bars summary.head{cursor:pointer;list-style:none}
+.bars summary.head::-webkit-details-marker{display:none}
+.bars .y{display:none}
+/* Шеврон висит в поле страницы (--pad не меньше 31px там, где действует это
+   правило), а не в сетке строки: колонка выжимок на 232px — потолок, а не
+   выбор (17.2), и любые 16px, отнятые у неё, уводят шесть выжимок из восьми
+   с двух строк на три. Свисающий маркер стоит колонкой у правого края и
+   не стоит ни пикселя ширины. */
+.bars summary.head::after{
+  content:"";position:absolute;right:-24px;top:50%;width:8px;height:8px;
+  border-right:1.5px solid var(--ink-3);border-bottom:1.5px solid var(--ink-3);
+  transform:translateY(-70%) rotate(45deg);
+  transition:transform .18s var(--ease-out),border-color .16s ease;
+}
+.bars details[open] > summary.head::after{transform:translateY(-20%) rotate(-135deg)}
+.bars summary.head:hover::after{border-color:var(--acc)}
+
 .bars .plot{display:block;position:relative;height:34px}
 /* Полоса — коробка, которая держит подпись ВНУТРИ себя и не даёт ей вылезти
    на фон. Заливка и рамка живут в ::before, поэтому прочерчивание scaleX
@@ -259,6 +307,11 @@ h1.name{
   font-family:var(--mono);font-size:10px;font-weight:500;
   color:var(--ink-2);line-height:1;
 }
+/* «Сбер» в полосе против «Сбербанк» в списке, «AIFactory» против «AIFactory
+   и свои продукты»: правило «полное имя там, где есть место, короткое там,
+   где его нет» (25.3) теперь живёт в одном элементе — хвост включается
+   только в списочном режиме. */
+.bars .long{display:none;font-style:normal}
 /* Левая колонка: только результат, ради него на строку и смотрят.
    Ориентир — две строки в ячейке: колонка должна читаться сама по себе,
    а не подписью к полосе. Ширина 232px посчитана от обратного — см. 17.2. */
@@ -267,19 +320,35 @@ h1.name{
   opacity:0;transition:opacity .3s var(--ease-out) .18s,color .16s ease;
 }
 .chart.in .b-res{opacity:1}
-.chart .b-res b,.chart-m .b-res b{font-weight:600;color:var(--ink)}
-.bars li.own{margin-top:18px;border-top-color:var(--line-2)}
-.bars li.own .bar::before{background:var(--acc);border-color:var(--acc)}
-.bars li.own .b-name{color:var(--bg)}
-.bars li:hover .bar::before{border-color:var(--acc-line)}
-.bars li:hover .b-res{color:var(--ink)}
-.bars li.own:hover .bar::before{background:var(--acc-hi);border-color:var(--acc-hi)}
-.chart-key{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px 24px}
-.chart-key span{display:inline-flex;align-items:center;gap:9px}
-.chart-key i{width:12px;height:12px;border-radius:1px;border:1px solid var(--line-2);background:var(--panel)}
-.chart-key .own i{background:var(--acc);border-color:var(--acc)}
+.chart .b-res b{font-weight:600;color:var(--ink)}
+.bars summary.head:hover .bar::before{border-color:var(--acc-line)}
+.bars summary.head:hover .b-res{color:var(--ink)}
 
-/* 761–1119px: полю времени уже не хватает ширины, чтобы самая короткая полоса
+/* Раскрытая карточка. Сетка и типографика взяты у прежней секции
+   «Корпоративные проекты» без изменений — она переехала внутрь строки
+   целиком, а не пересобрана заново. */
+.bars .body{padding:4px 0 30px}
+@keyframes panelIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.bars details[open] > .body{animation:panelIn .2s var(--ease-out) both}
+
+/* Своя линия. После переворота она стоит первой, поэтому разрыв ушёл вниз:
+   18px воздуха и линейка на тон ярче теперь отделяют её от корпоративной
+   сверху вниз, а не снизу вверх. Смысл тот же — «здесь кончается своё и
+   начинается корпоративное», — просто границу держит следующая строка. */
+.bars > li.own .bar::before{background:var(--acc);border-color:var(--acc)}
+.bars > li.own .b-name{color:var(--bg)}
+.bars > li.own + li{margin-top:18px;border-top-color:var(--line-2)}
+/* Единственная строка без раскрытия: у своей линии нет карточки проекта —
+   её подробности это две следующие секции целиком. Вместо шеврона ссылка;
+   исключение читается как исключение, потому что и полоса здесь другая. */
+.own-go{
+  display:flex;width:max-content;margin:0 0 14px auto;padding:7px 0;
+  align-items:center;gap:8px;color:var(--ink-3);text-decoration:none;
+  border-bottom:1px solid transparent;transition:color .16s ease,border-color .16s ease;
+}
+.own-go:hover{color:var(--acc);border-bottom-color:var(--acc-line)}
+
+/* 784–1119px: полю времени уже не хватает ширины, чтобы самая короткая полоса
    вместила своё название. Таблица раскладывается в строки: выжимка встаёт
    над своей полосой, поле времени забирает всю ширину.
    Порог 1120 = --max: выше него контейнер не растёт, поэтому в табличном
@@ -287,26 +356,43 @@ h1.name{
    всегда 4.45px с каждой стороны. */
 @media (max-width:1119px){
   .chart{--lbl:0px;--lgap:0px}
-  .bars li{display:block;padding-block:9px}
+  .bars .head{display:block;padding-block:9px}
   .chart .b-res{margin-bottom:5px}
 }
 
-/* мобильный вариант хронологии */
-.chart-m{display:none;list-style:none;margin:0;padding:0}
-.chart-m li{display:flex;gap:16px;padding:13px 0;border-top:1px solid var(--line)}
-.chart-m li:first-child{border-top:0}
-.chart-m .y{font-family:var(--mono);font-size:11.5px;color:var(--ink-4);white-space:nowrap;flex:0 0 92px;padding-top:2px;font-variant-numeric:tabular-nums}
-.chart-m .o{font-size:15px;color:var(--ink-2);min-width:0}
-.chart-m .b-res{display:block;margin-top:4px;font-size:12.5px;line-height:1.32;color:var(--ink-3)}
-.chart-m li.own .o{color:var(--acc);font-weight:600}
 /* Ниже 784 поле времени сжимается настолько, что самая узкая полоса (Тинькофф,
-   13 месяцев) перестаёт вмещать своё имя в 10px: на 784 у неё поле 2.04px
+   13 месяцев) перестаёт вмещать своё имя в 10px: на 784 у неё поле 2.03px
    с каждой стороны, ниже — рамка. Опускать кегль дальше значит вернуть
-   вымученную подпись. Диаграмма уступает место списку: та же восьмёрка строк
-   с годами и выжимками, только в другой раскладке. */
+   вымученную подпись. Полосы уступают место списку: та же восьмёрка строк
+   с годами и выжимками, только в другой раскладке — и с тем же раскрытием.
+   Полоса не удаляется из разметки, она распрямляется в текст: .plot
+   становится статичным, заливка ::before гаснет, имя внутри полосы
+   становится обычным заголовком строки. */
 @media (max-width:783px){
-  .chart{display:none}
-  .chart-m{display:block}
+  .axis{display:none}
+  .bars .head{
+    display:grid;grid-template-columns:92px minmax(0,1fr);column-gap:16px;
+    align-items:start;padding-block:13px;
+  }
+  .bars .y{
+    display:block;grid-column:1;grid-row:1 / 3;padding-top:2px;
+    font-family:var(--mono);font-size:11.5px;color:var(--ink-4);white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+  }
+  .bars .plot{grid-column:2;grid-row:1;position:static;height:auto;padding-right:22px}
+  .bars .b-res{grid-column:2;grid-row:2;margin:4px 0 0;font-size:12.5px;line-height:1.32;color:var(--ink-3)}
+  .bars .bar{position:static;display:block;width:auto;min-width:0}
+  .bars .lbl{white-space:normal}
+  .chart-key{display:none}
+  .chart-head{justify-content:flex-end}
+  .bars .bar::before{display:none}
+  .chart .b-name{font-family:var(--text);font-size:15px;font-weight:400;line-height:1.35;color:var(--ink-2)}
+  .bars > li.own .b-name{color:var(--acc);font-weight:600}
+  .bars .long{display:inline}
+  .bars summary.head::after{right:0;top:19px;transform:translateY(0) rotate(45deg)}
+  .bars details[open] > summary.head::after{transform:translateY(3px) rotate(-135deg)}
+  .bars .body{padding:0 0 24px}
+  .own-go{margin-bottom:16px}
 }
 
 /* ============ ПРОДУКТЫ (бенто 4 ячейки, асимметричные колонки) ============ */
@@ -391,19 +477,19 @@ h1.name{
   .step .w{margin-top:3px}
 }
 
-/* ============ КОРПОРАТИВНЫЙ ОПЫТ ============ */
-.jobs{display:flex;flex-direction:column}
+/* ============ КАРТОЧКА ПРОЕКТА (внутри раскрытой строки) ============ */
+/* Прежняя секция «Корпоративные проекты» целиком: та же сетка, та же
+   типографика, те же роли. Сняты только рамка и вертикальные поля —
+   границу строки теперь держит сама строка списка. */
 .job{
   display:grid;grid-template-columns:minmax(190px,.72fr) 1.28fr;
   gap:clamp(16px,3vw,48px);
-  padding-block:clamp(26px,3vw,36px);border-top:1px solid var(--line);
 }
-.job:first-child{border-top:0;padding-top:0}
 .job .org{font-family:var(--disp);font-weight:700;font-size:clamp(18px,1.7vw,21px);letter-spacing:-.02em;line-height:1.2}
 .job .when{margin-top:9px;font-family:var(--mono);font-size:12px;color:var(--ink-4);font-variant-numeric:tabular-nums}
 .job .role{margin-top:5px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc)}
 .job ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px}
-.job li{position:relative;padding-left:19px;font-size:15.5px;line-height:1.58;color:var(--ink-2)}
+.job li{position:relative;padding-left:19px;font-size:15.5px;line-height:1.58;color:var(--ink-2);border:0}
 .job li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:1px;background:var(--line-2)}
 .job li b{color:var(--ink);font-weight:600}
 /* Ключевой результат. Отдельная типографическая роль, не ещё один буллет:
@@ -523,6 +609,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(56px,6vw,88px) 40px;
     opacity:1!important;transform:none!important;transition:none!important;
   }
   .chart .bar::before{transform:scaleX(1)!important}
+  .bars details[open] > .body{animation:none!important}
   *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
 }
 </style>
@@ -535,8 +622,8 @@ footer{border-top:1px solid var(--line);padding-block:clamp(56px,6vw,88px) 40px;
   <div class="wrap">
     <a class="brand" href="#top">А. Иванов <span>/ системный аналитик</span></a>
     <nav class="nav" aria-label="Разделы">
-      <a href="#products">Продукты</a>
       <a href="#experience">Опыт</a>
+      <a href="#products">Продукты</a>
       <a href="#education">Образование</a>
       <a href="#contact">Контакты</a>
     </nav>
@@ -581,42 +668,255 @@ footer{border-top:1px solid var(--line);padding-block:clamp(56px,6vw,88px) 40px;
   </div>
 </div>
 
-<!-- ============ ХРОНОЛОГИЯ ============ -->
-<section id="timeline" aria-labelledby="t-time">
+<!-- ============ ОПЫТ ПО ГОДАМ + КОРПОРАТИВНЫЕ ПРОЕКТЫ ============ -->
+<!-- Одна секция вместо двух. Строка = полоса на оси лет + выжимка «что
+     получилось»; по клику раскрывается карточка проекта. Порядок сквозной:
+     от нового к старому, своя линия первая. -->
+<section id="experience" aria-labelledby="t-exp">
   <div class="wrap">
-    <h2 class="h2 rise" id="t-time">Опыт по годам</h2>
-    <p class="lede rise">Первая линия: корпоративные проекты, от науки и аналитики до банков и маркетплейса. Вторая: то, что я строю сам. С 2025 года они идут параллельно, и вторая выросла из первой.</p>
+    <h2 class="h2 rise" id="t-exp">Опыт по годам</h2>
+    <p class="lede lede-tight rise">Первая линия: корпоративные проекты, от науки и аналитики до банков и маркетплейса. Вторая: то, что я строю сам. С 2025 года они идут параллельно, и вторая выросла из первой.</p>
+    <p class="lede rise">Общий стаж 13 лет 10 месяцев. Моя сильная сторона&nbsp;— работать там, где пока непонятно, что и как: документации нет, вводных мало. Восстанавливаю устройство системы по коду и по людям, беру решение на себя и довожу его до прода.</p>
 
-    <div class="chart">
+    <div class="chart" id="timeline">
+      <div class="chart-head">
+        <p class="chart-key mono">
+          <span><i aria-hidden="true"></i>Корпоративные проекты</span>
+          <span class="own"><i aria-hidden="true"></i>Своя команда агентов и продукты</span>
+        </p>
+        <p class="chart-hint mono">Строка раскрывается</p>
+      </div>
+
       <div class="axis" aria-hidden="true">
         <i style="--x:0">2012</i><i style="--x:.2">2015</i><i style="--x:.4">2018</i><i style="--x:.6">2021</i><i style="--x:.8">2024</i><i style="--x:1">2027</i>
       </div>
-      <ol class="bars">
-        <li style="--s:.0444;--w:.4444"><span class="b-res">Программный комплекс&nbsp;— лучшее достижение лаборатории 2017</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">ИВМиМГ СО РАН</span><span class="sr">с 2012 по 2019 год</span></span></span></span></li>
-        <li style="--s:.4278;--w:.1278"><span class="b-res"><b>2</b> свидетельства на движок смысла; возглавил отдел аналитики</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">DST</span><span class="sr">с 2018 по 2020 год</span></span></span></span></li>
-        <li style="--s:.5611;--w:.1333"><span class="b-res">Модуль переплат ПФР целиком: появление, управление, удержание</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">ОТР 2000</span><span class="sr">с 2020 по 2022 год</span></span></span></span></li>
-        <li style="--s:.6222;--w:.0778"><span class="b-res"><b>~10</b> решений data lake в&nbsp;проде: от состава данных до приёмки</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Сбер</span><span class="sr">с мая 2021 по июль 2022</span></span></span></span></li>
-        <li style="--s:.6778;--w:.0722"><span class="b-res">«Безопасная сделка» вышла из монолита в&nbsp;прод микросервисом</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Тинькофф</span><span class="sr">с 2022 года по апрель 2023</span></span></span></span></li>
-        <li style="--s:.7444;--w:.1444"><span class="b-res"><b>8</b> сервисов в&nbsp;проде, миллионы офферов; ещё 5 во втором проекте</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Мегамаркет</span><span class="sr">с 2023 по 2025 год</span></span></span></span></li>
-        <li style="--s:.8111;--w:.1667"><span class="b-res">Монолит → микросервисы в&nbsp;проде: мониторинг риск-метрик клиента</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Альфа-Банк</span><span class="sr">с 2024 года по настоящее время</span></span></span></span></li>
-        <li class="own" style="--s:.8667;--w:.1111"><span class="b-res"><b>4</b> продукта в&nbsp;проде, сделаны своей командой AI-агентов</span><span class="plot"><span class="bar"><span class="lbl"><span class="b-name">AIFactory</span><span class="sr">с 2025 года по настоящее время</span></span></span></span></li>
-      </ol>
-      <p class="chart-key mono">
-        <span><i aria-hidden="true"></i>Корпоративные проекты</span>
-        <span class="own"><i aria-hidden="true"></i>Своя команда агентов и продукты</span>
-      </p>
-    </div>
 
-    <ol class="chart-m">
-      <li><span class="y">2012 / 2019</span><span class="o">ИВМиМГ СО РАН<span class="b-res">Программный комплекс&nbsp;— лучшее достижение лаборатории 2017</span></span></li>
-      <li><span class="y">2018 / 2020</span><span class="o">DST<span class="b-res"><b>2</b> свидетельства на движок смысла; возглавил отдел аналитики</span></span></li>
-      <li><span class="y">2020 / 2022</span><span class="o">ОТР 2000<span class="b-res">Модуль переплат ПФР целиком: появление, управление, удержание</span></span></li>
-      <li><span class="y">2021 / 2022</span><span class="o">Сбербанк<span class="b-res"><b>~10</b> решений data lake в&nbsp;проде: от состава данных до приёмки</span></span></li>
-      <li><span class="y">2022 / 2023</span><span class="o">Тинькофф<span class="b-res">«Безопасная сделка» вышла из монолита в&nbsp;прод микросервисом</span></span></li>
-      <li><span class="y">2023 / 2025</span><span class="o">Мегамаркет<span class="b-res"><b>8</b> сервисов в&nbsp;проде, миллионы офферов; ещё 5 во втором проекте</span></span></li>
-      <li><span class="y">2024 / сейчас</span><span class="o">Альфа-Банк<span class="b-res">Монолит → микросервисы в&nbsp;проде: мониторинг риск-метрик клиента</span></span></li>
-      <li class="own"><span class="y">2025 / сейчас</span><span class="o">AIFactory и свои продукты<span class="b-res"><b>4</b> продукта в&nbsp;проде, сделаны своей командой AI-агентов</span></span></li>
-    </ol>
+      <ol class="bars">
+
+        <li class="own" style="--s:.8667;--w:.1111">
+          <div class="head">
+            <span class="y" aria-hidden="true">2025 / сейчас</span>
+            <span class="b-res"><b>4</b> продукта в&nbsp;проде, сделаны своей командой AI-агентов</span>
+            <span class="plot"><span class="bar"><span class="lbl"><span class="b-name">AIFactory<i class="long"> и свои продукты</i></span></span></span><span class="sr">с 2025 года по настоящее время</span></span>
+          </div>
+          <a class="own-go mono" href="#products">Продукты и как они сделаны <span aria-hidden="true">&darr;</span></a>
+        </li>
+
+        <li style="--s:.8111;--w:.1667">
+          <details>
+            <summary class="head">
+              <span class="y" aria-hidden="true">2024 / сейчас</span>
+              <span class="b-res">Монолит &rarr; микросервисы в&nbsp;проде: мониторинг риск-метрик клиента</span>
+              <span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Альфа-Банк</span></span></span><span class="sr">с 2024 года по настоящее время</span></span>
+            </summary>
+            <div class="body">
+              <article class="job">
+                <div>
+                  <h3 class="org">Selecty, проект Альфа-Банка</h3>
+                  <p class="when num">Март 2024 / сейчас</p>
+                  <p class="role">Ведущий системный аналитик</p>
+                </div>
+                <div>
+                  <p class="res">Монолитная система мониторинга финансовых и риск-метрик клиента переведена в микросервисную архитектуру и выведена в прод.</p>
+                  <ul>
+                    <li>Веду больше трёх доменных областей: сделки, расчёт оборотов, мониторинг клиентов и сигналы, которые его запускают. Ищу системы-источники, проектирую межсистемные интеграции и защищаю решения на архитектурном комитете&nbsp;— за проект их выстроено <b>более чем с десятью командами</b> банка.</li>
+                    <!-- Лучшее число карточки. Имён представлений и таблиц нет намеренно (NDA):
+                         счёт объектов и секунды сами по себе ничего не раскрывают. -->
+                    <li>Разбор техдолга: две тяжёлые процедуры, одна&nbsp;— <b>больше 9000 строк</b> без описания и с вызовами, вложенными в другие процедуры. Раскрыл дерево вызовов и вынес расчёты отдельными алгоритмами: логика вышла из базы и стала пригодной для передачи в Kafka.</li>
+                  </ul>
+                  <p class="stack">Микросервисы / Kafka / хранимые процедуры / интеграции / SQL</p>
+                </div>
+              </article>
+            </div>
+          </details>
+        </li>
+
+        <li style="--s:.7444;--w:.1444">
+          <details>
+            <summary class="head">
+              <span class="y" aria-hidden="true">2023 / 2025</span>
+              <span class="b-res"><b>8</b> сервисов в&nbsp;проде, миллионы офферов; ещё 5 во втором проекте</span>
+              <span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Мегамаркет</span></span></span><span class="sr">с 2023 по 2025 год</span></span>
+            </summary>
+            <div class="body">
+              <article class="job">
+                <div>
+                  <h3 class="org">Мегамаркет</h3>
+                  <p class="when num">Март 2023 / май 2025</p>
+                  <p class="role">Системный аналитик, продуктовый архитектор</p>
+                </div>
+                <div>
+                  <!-- Единственная карточка с двумя проектами в двух командах, и она
+                       единственная, где оранжевых прочерков два: у каждой команды свой
+                       результат и своё число сервисов. Порядок внутри блока тот же, что
+                       у остальных карточек, — результат, потом серые буллеты к нему. -->
+                  <p class="res">Предобработка офферов шла раз в сутки, теперь идёт потоком: монолит распилен на 8 сервисов в проде.</p>
+                  <ul>
+                    <li>Документации не было, а офферов миллионы: восстановил схему AS IS, нашёл неконсистентность между базами-источниками и устранил потери данных при передаче. Переход предложил и согласовал сам: он затронул сервисы <b>более чем пяти смежных команд</b>, включая ML-категоризацию и матчинг товаров. От схемы до прода&nbsp;— полгода.</li>
+                  </ul>
+                  <p class="res">Внешние клиенты подключаются по API: спроектирован корневой сервис управления офферами, ещё 5 сервисов в проде.</p>
+                  <ul>
+                    <li>Это продавцы, партнёрские магазины и сторонние площадки; корневой сервис оркестрирует потоки данных и хранит целевые данные оффера. На базовой проработке предложил архитектуру: состав новых сервисов, интеграции со смежными командами, перенос старой функциональности.</li>
+                  </ul>
+                  <p class="stack">AS IS / TO BE / потоковая архитектура / API / высокие нагрузки</p>
+                </div>
+              </article>
+            </div>
+          </details>
+        </li>
+
+        <!-- Globus IT был одной карточкой на два проекта, но на оси лет это две
+             самостоятельные полосы с нахлёстом (решение v1.12). Строка не может
+             раскрываться в половину карточки, поэтому карточка разведена по своим
+             полосам: работодатель ушёл в строку роли, у каждого проекта свой
+             результат, свой буллет и свой стек. Ни одного нового факта. -->
+        <li style="--s:.6778;--w:.0722">
+          <details>
+            <summary class="head">
+              <span class="y" aria-hidden="true">2022 / 2023</span>
+              <span class="b-res">«Безопасная сделка» вышла из монолита в&nbsp;прод микросервисом</span>
+              <span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Тинькофф</span></span></span><span class="sr">с 2022 года по апрель 2023</span></span>
+            </summary>
+            <div class="body">
+              <article class="job">
+                <div>
+                  <h3 class="org">Тинькофф</h3>
+                  <p class="when num">Май 2022 / апрель 2023</p>
+                  <p class="role">Аналитик, аутстафф Globus IT</p>
+                </div>
+                <div>
+                  <p class="res">Бизнес-логика «безопасной сделки» жила только в коде: восстановил её и вывел из монолита в прод микросервисом.</p>
+                  <ul>
+                    <!-- Аналогия с Авито — единственный способ объяснить домен читателю
+                         снаружи банка. Схема публичная, NDA не задевает. -->
+                    <li>«Безопасная сделка»&nbsp;— расчёты, где деньги покупателя заморожены до выполнения условий; по такой схеме работает покупка-продажа на Авито. Восстанавливал логику из Java, Kotlin, Groovy и хранимых процедур Oracle, оформлял AS IS и TO BE.</li>
+                  </ul>
+                  <p class="stack">Java / Kotlin / Groovy / Oracle</p>
+                </div>
+              </article>
+            </div>
+          </details>
+        </li>
+
+        <li style="--s:.6222;--w:.0778">
+          <details>
+            <summary class="head">
+              <span class="y" aria-hidden="true">2021 / 2022</span>
+              <span class="b-res"><b>~10</b> решений data lake в&nbsp;проде: от состава данных до приёмки</span>
+              <span class="plot"><span class="bar"><span class="lbl"><span class="b-name">Сбер<i class="long">банк</i></span></span></span><span class="sr">с мая 2021 по июль 2022</span></span>
+            </summary>
+            <div class="body">
+              <article class="job">
+                <div>
+                  <h3 class="org">Сбербанк</h3>
+                  <p class="when num">Май 2021 / июль 2022</p>
+                  <p class="role">Аналитик, аутстафф Globus IT</p>
+                </div>
+                <div>
+                  <p class="res">Около 10 решений по передаче данных из data lake Сбербанка доведено до промышленной эксплуатации.</p>
+                  <ul>
+                    <li>За каждым решением стоит отдельная постановка бизнес-заказчика&nbsp;— от состава данных и потоков NiFi до интеграции с Hadoop и приёмки на ИФТ и ПСИ.</li>
+                  </ul>
+                  <p class="stack">HDFS / Hadoop / Apache NiFi / SQL</p>
+                </div>
+              </article>
+            </div>
+          </details>
+        </li>
+
+        <li style="--s:.5611;--w:.1333">
+          <details>
+            <summary class="head">
+              <span class="y" aria-hidden="true">2020 / 2022</span>
+              <span class="b-res">Модуль переплат ПФР целиком: появление, управление, удержание</span>
+              <span class="plot"><span class="bar"><span class="lbl"><span class="b-name">ОТР 2000</span></span></span><span class="sr">с 2020 по 2022 год</span></span>
+            </summary>
+            <div class="body">
+              <article class="job">
+                <div>
+                  <h3 class="org">ОТР 2000</h3>
+                  <p class="when num">Июнь 2020 / июнь 2022</p>
+                  <p class="role">Системный аналитик</p>
+                </div>
+                <div>
+                  <!-- Статус по резюме: тестовый стенд, не пром. Формулировка честная
+                       намеренно: «в проде» здесь было бы неправдой. -->
+                  <p class="res">Модуль переплат пенсионного фонда построен целиком, от появления до удержания из других выплат, и развёрнут на тестовом стенде.</p>
+                  <ul>
+                    <!-- Кейс с региональным коэффициентом утверждён владельцем отдельно: это
+                         единственное место на странице, где виден предметный смысл работы,
+                         а не только процесс. Размер команды на витрину не выносится. -->
+                    <li>Откуда берутся переплаты: коэффициенты выплат в регионах разные. Человек переехал, а сообщил об этом через год&nbsp;— и весь год получал начисления по коэффициенту прежнего региона. Модуль пересчитывает выплаты по новому коэффициенту и ведёт возникшую переплату.</li>
+                    <li>Интеграции с тремя смежными системами, биллинг, правила дата-фиксов.</li>
+                  </ul>
+                  <p class="stack">BPMN / UML / Sequence / Swagger / Postman / Groovy</p>
+                </div>
+              </article>
+            </div>
+          </details>
+        </li>
+
+        <li style="--s:.4278;--w:.1278">
+          <details>
+            <summary class="head">
+              <span class="y" aria-hidden="true">2018 / 2020</span>
+              <span class="b-res"><b>2</b> свидетельства на движок смысла; возглавил отдел аналитики</span>
+              <span class="plot"><span class="bar"><span class="lbl"><span class="b-name">DST</span></span></span><span class="sr">с 2018 по 2020 год</span></span>
+            </summary>
+            <div class="body">
+              <article class="job">
+                <div>
+                  <h3 class="org">DST, Deep Semantic Technologies</h3>
+                  <p class="when num">Июнь 2018 / май 2020</p>
+                  <p class="role">Аналитик, затем руководитель отдела</p>
+                </div>
+                <div>
+                  <p class="res">С нуля написал на Java движок, который извлекает объекты и субъекты из текста на живом языке; на него получено 2 свидетельства о регистрации.</p>
+                  <ul>
+                    <li>Аналитические отчёты по обратной связи для опроса ЦентроБанка и МодульБанка.</li>
+                    <li>Готовил научные обоснования и статьи для грантов и фондов, включая Фонд Бортника.</li>
+                    <li>Читал авторский курс на образовательном интенсиве «Остров 10-22» (Сколтех, 2019).</li>
+                  </ul>
+                  <p class="stack">Word2Vec / TF-IDF / Java / C++ / R / Python / Power BI</p>
+                </div>
+              </article>
+            </div>
+          </details>
+        </li>
+
+        <!-- Два яруса науки: строка результата — программный комплекс
+             (оранжевый прочерк, что получилось), буллет — 10 статей по той же
+             теме (серый прочерк, чем занимался). Число статей стоит на странице
+             один раз, здесь: в реестре «Научный результат» остались индексы. -->
+        <li style="--s:.0444;--w:.4444">
+          <details>
+            <summary class="head">
+              <span class="y" aria-hidden="true">2012 / 2019</span>
+              <span class="b-res">Программный комплекс&nbsp;— лучшее достижение лаборатории 2017</span>
+              <span class="plot"><span class="bar"><span class="lbl"><span class="b-name">ИВМиМГ СО РАН</span></span></span><span class="sr">с 2012 по 2019 год</span></span>
+            </summary>
+            <div class="body">
+              <article class="job">
+                <div>
+                  <h3 class="org">ИВМиМГ СО РАН</h3>
+                  <p class="when num">Сентябрь 2012 / май 2019</p>
+                  <p class="role">Научный сотрудник</p>
+                </div>
+                <div>
+                  <p class="res">Программный комплекс для расчёта случайных процессов признан самым значимым достижением лаборатории по итогам 2017 года.</p>
+                  <ul>
+                    <li><b>10 статей</b> по численному анализу систем стохастических дифференциальных уравнений на суперкомпьютере.</li>
+                    <li>Вёл проекты лаборатории целиком&nbsp;— от постановки задачи до публикации результата: планирование, отчётность и кадровые вопросы.</li>
+                  </ul>
+                  <p class="stack">Численные методы / HPC / C++ / R</p>
+                </div>
+              </article>
+            </div>
+          </details>
+        </li>
+
+      </ol>
+    </div>
   </div>
 </section>
 
@@ -713,135 +1013,6 @@ footer{border-top:1px solid var(--line);padding-block:clamp(56px,6vw,88px) 40px;
       <div class="step"><span class="t">Ревью</span><span class="w">Ревьюер</span></div>
       <div class="step"><span class="t">Тесты</span><span class="w">Тестировщик</span></div>
       <div class="step last"><span class="t">Прод</span><span class="w">Владелец</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ КОРПОРАТИВНЫЙ ОПЫТ ============ -->
-<section id="experience" aria-labelledby="t-exp">
-  <div class="wrap">
-    <h2 class="h2 rise" id="t-exp">Корпоративные проекты</h2>
-    <p class="lede rise">Общий стаж 13 лет 10 месяцев. Моя сильная сторона — работать там, где пока непонятно, что и как: документации нет, вводных мало. Восстанавливаю устройство системы по коду и по людям, беру решение на себя и довожу его до прода.</p>
-
-    <div class="jobs">
-
-      <article class="job rise">
-        <div>
-          <h3 class="org">Selecty, проект Альфа-Банка</h3>
-          <p class="when num">Март 2024 / сейчас</p>
-          <p class="role">Ведущий системный аналитик</p>
-        </div>
-        <div>
-          <p class="res">Монолитная система мониторинга финансовых и риск-метрик клиента переведена в микросервисную архитектуру и выведена в прод.</p>
-          <ul>
-            <li>Веду больше трёх доменных областей: сделки, расчёт оборотов, мониторинг клиентов и сигналы, которые его запускают. Ищу системы-источники, проектирую межсистемные интеграции и защищаю решения на архитектурном комитете&nbsp;— за проект их выстроено <b>более чем с десятью командами</b> банка.</li>
-            <!-- Лучшее число карточки. Имён представлений и таблиц нет намеренно (NDA):
-                 счёт объектов и секунды сами по себе ничего не раскрывают. -->
-            <li>Разбор техдолга: две тяжёлые процедуры, одна&nbsp;— <b>больше 9000 строк</b> без описания и с вызовами, вложенными в другие процедуры. Раскрыл дерево вызовов и вынес расчёты отдельными алгоритмами: логика вышла из базы и стала пригодной для передачи в Kafka.</li>
-          </ul>
-          <p class="stack">Микросервисы / Kafka / хранимые процедуры / интеграции / SQL</p>
-        </div>
-      </article>
-
-      <article class="job rise">
-        <div>
-          <h3 class="org">Мегамаркет</h3>
-          <p class="when num">Март 2023 / май 2025</p>
-          <p class="role">Системный аналитик, продуктовый архитектор</p>
-        </div>
-        <div>
-          <!-- Единственная карточка секции с двумя проектами в двух командах, и она
-               единственная, где оранжевых прочерков два: у каждой команды свой
-               результат и своё число сервисов. Порядок внутри блока тот же, что
-               у остальных пяти карточек, — результат, потом серые буллеты к нему. -->
-          <p class="res">Предобработка офферов шла раз в сутки, теперь идёт потоком: монолит распилен на 8 сервисов в проде.</p>
-          <ul>
-            <li>Документации не было, а офферов миллионы: восстановил схему AS IS, нашёл неконсистентность между базами-источниками и устранил потери данных при передаче. Переход предложил и согласовал сам: он затронул сервисы <b>более чем пяти смежных команд</b>, включая ML-категоризацию и матчинг товаров. От схемы до прода&nbsp;— полгода.</li>
-          </ul>
-          <p class="res">Внешние клиенты подключаются по API: спроектирован корневой сервис управления офферами, ещё 5 сервисов в проде.</p>
-          <ul>
-            <li>Это продавцы, партнёрские магазины и сторонние площадки; корневой сервис оркестрирует потоки данных и хранит целевые данные оффера. На базовой проработке предложил архитектуру: состав новых сервисов, интеграции со смежными командами, перенос старой функциональности.</li>
-          </ul>
-          <p class="stack">AS IS / TO BE / потоковая архитектура / API / высокие нагрузки</p>
-        </div>
-      </article>
-
-      <article class="job rise">
-        <div>
-          <h3 class="org">Globus IT</h3>
-          <p class="when num">Май 2021 / апрель 2023</p>
-          <p class="role">Аналитик, аутстафф</p>
-        </div>
-        <div>
-          <p class="res">Около 10 решений по передаче данных из data lake Сбербанка доведено до промышленной эксплуатации.</p>
-          <ul>
-            <li>Сбербанк: за каждым решением стоит отдельная постановка бизнес-заказчика&nbsp;— от состава данных и потоков NiFi до интеграции с Hadoop и приёмки на ИФТ и ПСИ.</li>
-            <!-- Аналогия с Авито — единственный способ объяснить домен читателю
-                 снаружи банка. Схема публичная, NDA не задевает. -->
-            <li>Тинькофф: «безопасная сделка»&nbsp;— расчёты, где деньги покупателя заморожены до выполнения условий; по такой схеме работает покупка-продажа на Авито. Бизнес-логика жила только в коде: восстанавливал её из Java, Kotlin, Groovy и хранимых процедур Oracle, оформлял AS IS и TO BE, вывел из монолита в прод микросервисом.</li>
-          </ul>
-          <p class="stack">HDFS / Hadoop / Apache NiFi / SQL / Oracle</p>
-        </div>
-      </article>
-
-      <article class="job rise">
-        <div>
-          <h3 class="org">ОТР 2000</h3>
-          <p class="when num">Июнь 2020 / июнь 2022</p>
-          <p class="role">Системный аналитик</p>
-        </div>
-        <div>
-          <!-- Статус по резюме: тестовый стенд, не пром. Формулировка честная
-               намеренно: «в проде» здесь было бы неправдой. -->
-          <p class="res">Модуль переплат пенсионного фонда построен целиком, от появления до удержания из других выплат, и развёрнут на тестовом стенде.</p>
-          <ul>
-            <!-- Кейс с региональным коэффициентом утверждён владельцем отдельно: это
-               единственное место на странице, где виден предметный смысл работы,
-               а не только процесс. Размер команды на витрину не выносится. -->
-            <li>Откуда берутся переплаты: коэффициенты выплат в регионах разные. Человек переехал, а сообщил об этом через год&nbsp;— и весь год получал начисления по коэффициенту прежнего региона. Модуль пересчитывает выплаты по новому коэффициенту и ведёт возникшую переплату.</li>
-            <li>Интеграции с тремя смежными системами, биллинг, правила дата-фиксов.</li>
-          </ul>
-          <p class="stack">BPMN / UML / Sequence / Swagger / Postman / Groovy</p>
-        </div>
-      </article>
-
-      <article class="job rise">
-        <div>
-          <h3 class="org">DST, Deep Semantic Technologies</h3>
-          <p class="when num">Июнь 2018 / май 2020</p>
-          <p class="role">Аналитик, затем руководитель отдела</p>
-        </div>
-        <div>
-          <p class="res">С нуля написал на Java движок, который извлекает объекты и субъекты из текста на живом языке; на него получено 2 свидетельства о регистрации.</p>
-          <ul>
-            <li>Аналитические отчёты по обратной связи для опроса ЦентроБанка и МодульБанка.</li>
-            <li>Готовил научные обоснования и статьи для грантов и фондов, включая Фонд Бортника.</li>
-            <li>Читал авторский курс на образовательном интенсиве «Остров 10-22» (Сколтех, 2019).</li>
-          </ul>
-          <p class="stack">Word2Vec / TF-IDF / Java / C++ / R / Python / Power BI</p>
-        </div>
-      </article>
-
-      <!-- Два яруса науки: строка результата — программный комплекс
-           (оранжевый прочерк, что получилось), буллет — 10 статей по той же
-           теме (серый прочерк, чем занимался). Число статей стоит на странице
-           один раз, здесь: в реестре «Научный результат» остались индексы. -->
-      <article class="job rise">
-        <div>
-          <h3 class="org">ИВМиМГ СО РАН</h3>
-          <p class="when num">Сентябрь 2012 / май 2019</p>
-          <p class="role">Научный сотрудник</p>
-        </div>
-        <div>
-          <p class="res">Программный комплекс для расчёта случайных процессов признан самым значимым достижением лаборатории по итогам 2017 года.</p>
-          <ul>
-            <li><b>10 статей</b> по численному анализу систем стохастических дифференциальных уравнений на суперкомпьютере.</li>
-            <li>Вёл проекты лаборатории целиком&nbsp;— от постановки задачи до публикации результата: планирование, отчётность и кадровые вопросы.</li>
-          </ul>
-          <p class="stack">Численные методы / HPC / C++ / R</p>
-        </div>
-      </article>
-
     </div>
   </div>
 </section>
@@ -980,7 +1151,7 @@ footer{border-top:1px solid var(--line);padding-block:clamp(56px,6vw,88px) 40px;
      Это единственный «поставленный» момент на странице. */
   var chart = document.querySelector('.chart');
   if (chart) {
-    document.querySelectorAll('.bars li').forEach(function (li, i) {
+    document.querySelectorAll('.bars > li').forEach(function (li, i) {
       li.querySelector('.bar').style.setProperty('--bar-delay', (i * 55) + 'ms');
       li.querySelectorAll('.lbl, .b-res').forEach(function (el) {
         el.style.transitionDelay = (180 + i * 55) + 'ms';
