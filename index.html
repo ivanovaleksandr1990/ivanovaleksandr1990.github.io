@@ -341,12 +341,6 @@ h1.name{
 /* Единственная строка без раскрытия: у своей линии нет карточки проекта —
    её подробности это две следующие секции целиком. Вместо шеврона ссылка;
    исключение читается как исключение, потому что и полоса здесь другая. */
-.own-go{
-  display:flex;width:max-content;margin:0 0 14px auto;padding:7px 0;
-  align-items:center;gap:8px;color:var(--ink-3);text-decoration:none;
-  border-bottom:1px solid transparent;transition:color .16s ease,border-color .16s ease;
-}
-.own-go:hover{color:var(--acc);border-bottom-color:var(--acc-line)}
 
 /* 784–1119px: полю времени уже не хватает ширины, чтобы самая короткая полоса
    вместила своё название. Таблица раскладывается в строки: выжимка встаёт
@@ -392,7 +386,6 @@ h1.name{
   .bars summary.head::after{right:0;top:19px;transform:translateY(0) rotate(45deg)}
   .bars details[open] > summary.head::after{transform:translateY(3px) rotate(-135deg)}
   .bars .body{padding:0 0 24px}
-  .own-go{margin-bottom:16px}
 }
 
 /* ============ ПРОДУКТЫ (бенто 4 ячейки, асимметричные колонки) ============ */
@@ -697,7 +690,6 @@ footer{border-top:1px solid var(--line);padding-block:clamp(56px,6vw,88px) 40px;
             <span class="b-res"><b>4</b> продукта в&nbsp;проде, сделаны своей командой AI-агентов</span>
             <span class="plot"><span class="bar"><span class="lbl"><span class="b-name">AIFactory<i class="long"> и свои продукты</i></span></span></span><span class="sr">с 2025 года по настоящее время</span></span>
           </div>
-          <a class="own-go mono" href="#products">Продукты и как они сделаны <span aria-hidden="true">&darr;</span></a>
         </li>
 
         <li style="--s:.8111;--w:.1667">
